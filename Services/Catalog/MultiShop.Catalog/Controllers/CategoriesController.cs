@@ -17,7 +17,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategoryList()
+        public async Task<IActionResult> GetAllCategoriesList()
         {
             var values = await _categoryService.GetAllCategoriesAsync();
             return Ok(values);
