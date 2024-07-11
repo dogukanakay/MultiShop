@@ -15,7 +15,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     opt.RequireHttpsMetadata = false; //https kapatma, http üzerinde çal??mak için
 });
 builder.Services.AddDbContext<OrderContext>();
-
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddApplicationService(builder.Configuration);
 // Add services to the container.
