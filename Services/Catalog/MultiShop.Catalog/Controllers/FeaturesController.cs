@@ -13,9 +13,9 @@ namespace MultiShop.Catalog.Controllers
     {
         private readonly IFeatureService _featureService;
 
-        public FeaturesController(IFeatureService categoryService)
+        public FeaturesController(IFeatureService featureService)
         {
-            _featureService = categoryService;
+            _featureService = featureService;
         }
 
         [HttpGet]
