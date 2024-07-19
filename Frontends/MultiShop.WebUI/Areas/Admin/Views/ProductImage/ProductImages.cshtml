@@ -1,10 +1,9 @@
-﻿@model List<ResultProductWithCategoryDto>
+﻿@model List<ResultProductImageDto>
 @{
-    ViewData["Title"] = "GetProductListWithCategory";
+    ViewData["Title"] = "ProductImages";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
     int count = 0;
 }
-
 
 <section class="content container-fluid">
     <div class="row">
@@ -16,12 +15,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Ürün Adı</th>
-                                <th>Ürün Fiyatı</th>
-                                <th>Ürün Kategori</th>
+                                <th>Ürün Görseli</th>
                                 <th>Sil</th>
                                 <th>Güncelle</th>
-                                <th>Ürün Görselleri</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -30,19 +27,17 @@
                                 count++;
                                 <tr>
                                     <th scope="row">@count</th>
-                                    <td>@item.ProductName</td>
-                                    <td>@item.ProductPrice</td>
-                                    <td>@item.Category.CategoryName</td>
-                                    <td><a href="/Admin/Product/DeleteProduct/@item.ProductId" class="btn btn-danger">Sil</a></td>
-                                    <td><a href="/Admin/Product/UpdateProduct/@item.ProductId" class="btn btn-success">Güncelle</a></td>
-                                    <td><a href="/Admin/ProductImage/ProductImages/@item.ProductId" class="btn btn-warning">Ürün Görselleri</a></td>
+                                    <td><img src="@item.Image" style="height:150px;"/></td>
+                                    <td><a href="/Admin/ProductImage/DeleteProductImage/@item.ProductImageId" class="btn btn-danger">Sil</a></td>
+                                    <td><a href="/Admin/ProductImage/UpdateProductImage/@item.ProductImageId" class="btn btn-success">Güncelle</a></td>
+                                    
 
                                 </tr>
                             }
 
                         </tbody>
                     </table>
-                    <a href="/Admin/Product/CreateProduct/" class="btn btn-primary">Yeni Ürün Girişi</a>
+                    <a href="/Admin/ProductImage/CreateProductImage/@ViewBag.x" class="btn btn-primary">Yeni Görsel Girişi</a>
                 </div>
             </div>
         </div>
