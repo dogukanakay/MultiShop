@@ -1,8 +1,8 @@
-﻿namespace MultiShop.Catalog.Dtos.ProductDetailDtos
+﻿namespace MultiShop.DtoLayer.CatalogDtos.ProductDetailDtos
 {
-    public class UpdateProductDetailDto
+    public class ResultProductDetailDto
     {
-        public string? ProductDetailId { get; set; }
+        public string ProductDetailId { get; set; }
         public string ProductDescription { get; set; }
         public string ProductInfo { get; set; }
         public string ProductId { get; set; }
