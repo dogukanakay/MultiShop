@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.DtoLayer.IdentityDtos.LoginDtos;
 using MultiShop.WebUI.Models;
+using MultiShop.WebUI.Services;
+using MultiShop.WebUI.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -14,13 +17,17 @@ namespace MultiShop.WebUI.Controllers
 	{
 		private readonly string myLoginApi = "http://localhost:5001/api/logins";
 		private readonly IHttpClientFactory _httpClientFactory;
+		private readonly ILoginService _loginService;
+		private readonly IIdentityService _identityService;
 
-		public LoginController(IHttpClientFactory httpClientFactory)
-		{
-			_httpClientFactory = httpClientFactory;
-		}
+        public LoginController(IHttpClientFactory httpClientFactory, ILoginService loginService, IIdentityService identityService)
+        {
+            _httpClientFactory = httpClientFactory;
+            _loginService = loginService;
+            _identityService = identityService;
+        }
 
-		[HttpGet]
+        [HttpGet]
 		public IActionResult Index()
 		{
 			return View();
@@ -29,6 +36,7 @@ namespace MultiShop.WebUI.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Index(CreateLoginDto createLoginDto)
 		{
+			await HttpContext.SignOutAsync();
 			var client = _httpClientFactory.CreateClient();
 			var content = new StringContent(JsonSerializer.Serialize(createLoginDto), Encoding.UTF8, "application/json");
 			var response = await client.PostAsync(myLoginApi, content);
@@ -55,11 +63,29 @@ namespace MultiShop.WebUI.Controllers
 							IsPersistent = true
 						};
 						await HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProps);
+						var id = _loginService.GetUserId;
 						return RedirectToAction("Index", "Default");
 					}
 				}
 			}
 			return View();
+		}
+
+
+		//[HttpGet]
+		//public IActionResult SignIn()
+		//{
+		//	return View();
+		//}
+		//[HttpPost]
+		public async Task<IActionResult> SignIn(SignInDto signInDto)
+		{
+			signInDto.UserName = "admin";
+			signInDto.Password = "1234567Da*";
+
+			await _identityService.SignIn(signInDto);
+			return RedirectToAction("Index", "Test");
+
 		}
 	}
 }

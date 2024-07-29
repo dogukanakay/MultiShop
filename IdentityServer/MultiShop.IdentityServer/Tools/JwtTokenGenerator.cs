@@ -22,7 +22,7 @@ namespace MultiShop.IdentityServer.Tools
 
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key));
 			var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-			var expireDate = DateTime.UtcNow.AddMinutes(JwtTokenDefaults.Expire);
+			var expireDate = DateTime.UtcNow.AddDays(JwtTokenDefaults.Expire);
 			JwtSecurityToken token = new JwtSecurityToken(
 				issuer: JwtTokenDefaults.ValidIssuer,
 				audience: JwtTokenDefaults.ValidAudience,
