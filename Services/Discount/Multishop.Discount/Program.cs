@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
 {
     opt.Authority = builder.Configuration["IdentityServerUrl"];
-    opt.Audience = "ResourceOrder";
+    opt.Audience = "ResourceDiscount";
     opt.RequireHttpsMetadata = false; //https kapatma, http üzerinde çal??mak için
 });
 // Add services to the container.

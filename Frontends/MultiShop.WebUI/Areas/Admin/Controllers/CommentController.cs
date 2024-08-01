@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.DtoLayer.CommentDtos;
+using MultiShop.WebUI.Services.CommentServices;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -10,40 +11,37 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
     public class CommentController : Controller
     {
 
-        private readonly string myCommentApi = "https://localhost:7191/api/comments";
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ICommentService _commentService;
 
-        public CommentController(IHttpClientFactory httpClientFactory)
+        public CommentController(ICommentService commentService)
         {
-            _httpClientFactory = httpClientFactory;
+            _commentService = commentService;
+        }
+
+
+        void CommentViewBagList()
+        {
+            ViewBag.v1 = "Ana Sayfa";
+            ViewBag.v2 = "Yorumlar";
+            ViewBag.v3 = "Yorum İşlemleri";
         }
 
         [Route("Index")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            ViewBag.v1 = "Ana Sayfa";
-            ViewBag.v2 = "Yorumlar";
-            ViewBag.v3 = "Yorum Listesi";
-            ViewBag.v0 = "Yorum İşlemleri";
+            CommentViewBagList();
+            var values = await _commentService.GetAllCommentsAsync();
+            return View(values);
 
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync(myCommentApi);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResultCommentDto>>(jsonData);
-                return View(values);
-            }
-            return View();
         }
 
-        
+
         [Route("DeleteComment/{id}")]
-        public async Task<IActionResult> DeleteComment(string id)
+        public async Task<IActionResult> DeleteComment(int id)
         {
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.DeleteAsync(myCommentApi + "?id=" + id);
+
+            var responseMessage = await _commentService.DeleteCommentAsync(id);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index", "Comment", new { area = "Admin" });
@@ -54,21 +52,12 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
 
         [Route("UpdateComment/{id}")]
         [HttpGet]
-        public async Task<IActionResult> UpdateComment(string id)
+        public async Task<IActionResult> UpdateComment(int id)
         {
-            ViewBag.v1 = "Ana Sayfa";
-            ViewBag.v2 = "Yorumlar";
-            ViewBag.v3 = "Yorum Listesi";
-            ViewBag.v0 = "Yorum İşlemleri";
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync(myCommentApi + "/" + id);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<UpdateCommentDto>(jsonData);
-                return View(values);
-            }
-            return View();
+            CommentViewBagList();
+
+            var values = await _commentService.GetByIdCommentToUpdateAsync(id);
+            return View(values);
         }
 
         [Route("UpdateComment/{id}")]
@@ -76,10 +65,8 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
         public async Task<IActionResult> UpdateComment(UpdateCommentDto updateCommentDto)
         {
 
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(updateCommentDto);
-            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync(myCommentApi, content);
+            
+            var responseMessage = await _commentService.UpdateCommentAsync(updateCommentDto);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index", "Comment", new { area = "Admin" });

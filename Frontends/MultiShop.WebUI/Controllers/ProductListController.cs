@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.DtoLayer.CommentDtos;
+using MultiShop.WebUI.Services.CommentServices;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -7,19 +8,19 @@ namespace MultiShop.WebUI.Controllers
 {
     public class ProductListController : Controller
     {
-        private readonly string myCommentApi = "https://localhost:7191/api/comments";
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ICommentService _commentService;
 
-        public ProductListController(IHttpClientFactory httpClientFactory)
+        public ProductListController(ICommentService commentService)
         {
-            _httpClientFactory = httpClientFactory;
+            _commentService = commentService;
         }
+
         public IActionResult Index(string id)
         {
             ViewBag.Directory1 = "Ana Sayfa";
             ViewBag.Directory2 = "Ürünler";
             ViewBag.Directory3 = "Ürün Listesi";
-            ViewBag.i=id;
+            ViewBag.i = id;
             return View();
         }
 
@@ -35,7 +36,7 @@ namespace MultiShop.WebUI.Controllers
         [HttpGet]
         public PartialViewResult AddComment()
         {
-          
+
             return PartialView();
         }
 
@@ -46,10 +47,8 @@ namespace MultiShop.WebUI.Controllers
             createCommentDto.ImageUrl = "test";
             createCommentDto.CreatedDate = DateTime.Parse(DateTime.Now.ToShortDateString());
             createCommentDto.Status = false;
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createCommentDto);
-            StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync(myCommentApi, content);
+            
+            var responseMessage = await _commentService.CreateCommentAsync(createCommentDto);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("ProductDetail", "ProductList", new { id });

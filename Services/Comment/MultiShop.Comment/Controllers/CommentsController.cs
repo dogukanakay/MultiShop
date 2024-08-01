@@ -8,7 +8,7 @@ namespace MultiShop.Comment.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize]
     public class CommentsController : ControllerBase
     {
         private readonly CommentContext _commentContext;
