@@ -39,26 +39,33 @@ namespace MultiShop.Catalog.Services.ProductDetailServices
         public async Task<GetByIdProductDetailDto> GetByIdProductDetailAsync(string id)
         {
             var values = await _productDetailCollection.Find(p => p.ProductDetailId == id).FirstOrDefaultAsync();
+
             return _mapper.Map<GetByIdProductDetailDto>(values);
         }
 
         public async Task<GetByIdProductDetailDto> GetByProductIdProductDetailAsync(string id)
         {
             var values = await _productDetailCollection.Find(p => p.ProductId == id).FirstOrDefaultAsync();
+            if (values == null)
+            {
+                var createProductDetail = new CreateProductDetailDto
+                {
+                    ProductId = id,
+                    ProductDescription = "Bu Ürünle İlgili Açıklama Yazılıyor...",
+                    ProductInfo = "Bu Ürünle İlgili Bilgi Yazılıyor..."
+                };
+                await CreateProductDetailAsync(createProductDetail);
+                values = _mapper.Map<ProductDetail>(createProductDetail);
+            }
             return _mapper.Map<GetByIdProductDetailDto>(values);
         }
 
         public async Task UpdateProductDetailAsync(UpdateProductDetailDto updateProductDetailDto)
         {
             var values = _mapper.Map<ProductDetail>(updateProductDetailDto);
-            if (values.ProductDetailId != null)
-            {
-                await _productDetailCollection.FindOneAndReplaceAsync(p => p.ProductDetailId == updateProductDetailDto.ProductDetailId, values);
-            }
-            else
-            {
-                await _productDetailCollection.InsertOneAsync(values);
-            }
+
+            await _productDetailCollection.FindOneAndReplaceAsync(p => p.ProductDetailId == updateProductDetailDto.ProductDetailId, values);
+
 
         }
 

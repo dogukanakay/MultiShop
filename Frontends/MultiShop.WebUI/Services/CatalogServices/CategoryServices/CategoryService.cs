@@ -11,14 +11,16 @@ namespace MultiShop.WebUI.Services.CatalogServices.CategoryServices
             _httpClient = httpClient;
         }
 
-        public async Task CreateCategoryAsync(CreateCategoryDto createCategoryDto)
+        public async Task<HttpResponseMessage> CreateCategoryAsync(CreateCategoryDto createCategoryDto)
         {
             var responseMessage = await _httpClient.PostAsJsonAsync<CreateCategoryDto>("categories", createCategoryDto);
+            return responseMessage;
         }
 
-        public async Task DeleteCategoryAsync(string id)
+        public async Task<HttpResponseMessage> DeleteCategoryAsync(string id)
         {
             var responseMessage = await _httpClient.DeleteAsync("categories?id=" + id);
+            return responseMessage;
         }
 
         public async Task<List<ResultCategoryDto>> GetAllCategoriesAsync()
@@ -35,9 +37,17 @@ namespace MultiShop.WebUI.Services.CatalogServices.CategoryServices
             return values;
         }
 
-        public async Task UpdateCategoryAsync(UpdateCategoryDto updateCategoryDto)
+        public async Task<UpdateCategoryDto> GetByIdCategoryToUpdateAsync(string id)
+        {
+            var responseMessage = await _httpClient.GetAsync("categories/" + id);
+            var values = await responseMessage.Content.ReadFromJsonAsync<UpdateCategoryDto>();
+            return values;
+        }
+
+        public async Task<HttpResponseMessage> UpdateCategoryAsync(UpdateCategoryDto updateCategoryDto)
         {
             var responseMessage = await _httpClient.PutAsJsonAsync<UpdateCategoryDto>("categories", updateCategoryDto);
+            return responseMessage;
         }
     }
 }

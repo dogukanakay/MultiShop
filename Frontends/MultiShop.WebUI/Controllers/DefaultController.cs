@@ -6,8 +6,7 @@ namespace MultiShop.WebUI.Controllers
     {
         public IActionResult Index()
         {
-            var user = User.Claims;
-            int x;
+            ViewBag.Directory1 = "Ana Sayfa";
             return View();
         }
     }
