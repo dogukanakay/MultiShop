@@ -52,5 +52,12 @@ namespace Multishop.Discount.Controllers
             return Ok("İndirim kuponu başarıyla silindi.");
         }
 
+        [HttpGet("GetDiscountCodeDetailByCode")]
+        public async Task<IActionResult> GetDiscountCodeDetailByCode(string code)
+        {
+            var values = await _discoutService.GetDiscountCodeDetailByCodeAsync(code);
+            return Ok(values);
+        }
+
     }
 }
