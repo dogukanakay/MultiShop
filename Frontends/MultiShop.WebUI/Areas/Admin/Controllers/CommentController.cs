@@ -36,6 +36,14 @@ namespace MultiShop.WebUI.Areas.Admin.Controllers
 
         }
 
+        [Route("ProductComments/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> ProductComments(string id)
+        {
+            CommentViewBagList();
+            var values = await _commentService.GetCommentByProductIdAsync(id);
+            return View(values);
+        }
 
         [Route("DeleteComment/{id}")]
         public async Task<IActionResult> DeleteComment(int id)
