@@ -23,12 +23,6 @@ namespace MultiShop.WebUI.Controllers
             ViewBag.Directory1 = "Ana Sayfa";
             ViewBag.Directory2 = "Sepetim";
             ViewBag.Directory3 = "Sepet İçeriğim";
-            var basket = await _basketService.GetBasketAsync();
-            ViewBag.TotalPrice = basket.TotalPrice;
-            var tax = basket.TotalPrice * 10 / 100;
-            var totalPriceWithTax = tax + basket.TotalPrice;
-            ViewBag.Tax = tax;
-            ViewBag.TotalPriceWithTax = totalPriceWithTax;
             return View();
         }
 

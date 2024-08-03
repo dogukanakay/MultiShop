@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MultiShop.WebUI.Services.BasketServices;
 using MultiShop.WebUI.Services.DiscountServices;
+using NuGet.ContentModel;
 
 namespace MultiShop.WebUI.Controllers
 {
     public class DiscountController : Controller
     {
         private readonly IDiscountService _discountService;
-     
-        public DiscountController(IDiscountService discountService)
+        private readonly IBasketService _basketService;
+
+        public DiscountController(IDiscountService discountService, IBasketService basketService)
         {
-            _discountService = discountService;            
+            _discountService = discountService;
+            _basketService = basketService;
         }
 
         [HttpGet]
@@ -22,10 +25,22 @@ namespace MultiShop.WebUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult ConfirmDiscountCoupon(string code)
+        public async Task<IActionResult> ConfirmDiscountCoupon(string code)
         {
-            var values = _discountService.GetDiscountCodeDetailByCode(code);
-            return View(values);
+            var values = await _discountService.GetDiscountCodeDetailByCode(code);
+            if(values != null)
+            {
+                var basketValues = await _basketService.GetBasketAsync();
+                basketValues.DiscountCode = values.Code;
+                basketValues.DiscountRate = values.Rate;
+                var responseMessage = await _basketService.SaveBasketAsync(basketValues);
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index", "ShoppingCart");
+                }
+            }
+            Console.WriteLine("Kupon Geçersiz");
+            return RedirectToAction("Index", "ShoppingCart");
         }
     }
 }

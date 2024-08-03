@@ -13,6 +13,7 @@ namespace MultiShop.WebUI.ViewComponents.ShoppingCarViewComponents
             _basketService = basketService;
         }
 
+
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var values = await _basketService.GetBasketAsync();
