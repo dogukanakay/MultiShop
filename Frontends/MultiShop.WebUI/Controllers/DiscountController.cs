@@ -39,7 +39,21 @@ namespace MultiShop.WebUI.Controllers
                     return RedirectToAction("Index", "ShoppingCart");
                 }
             }
-            Console.WriteLine("Kupon Geçersiz");
+            
+            return RedirectToAction("Index", "ShoppingCart");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveDiscountCouponFromBasket()
+        {
+            var basket = await _basketService.GetBasketAsync();
+            basket.DiscountCode = null;
+            basket.DiscountRate=null;
+            var responseMessage = await _basketService.SaveBasketAsync(basket);
+            if(responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "ShoppingCart");
+            }
             return RedirectToAction("Index", "ShoppingCart");
         }
     }

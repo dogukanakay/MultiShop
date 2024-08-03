@@ -32,7 +32,7 @@ namespace MultiShop.WebUI.ViewComponents.ShoppingCarViewComponents
             {
                 ViewBag.DiscountRate = basket.DiscountRate;
                 ViewBag.DiscountCode = basket.DiscountCode;
-                ViewBag.TotalPriceWithTaxAfterDiscount = totalPriceWithTax*basket.DiscountRate/100;
+                ViewBag.TotalPriceWithTaxAfterDiscount = basket.TotalPrice - totalPriceWithTax*basket.DiscountRate/100;
             }
             return View(basket);
         }
