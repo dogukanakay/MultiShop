@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MultiShop.IdentityServer.Dtos;
 using MultiShop.IdentityServer.Models;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,6 +40,31 @@ namespace MultiShop.IdentityServer.Controllers
                 UserName = user.UserName,
 
             });
+        }
+
+        [HttpGet("GetAllUsersList")]
+        public async Task<IActionResult> GetAllUsersList()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var userDto = new List<ResultUserDto>();
+            foreach (var user in users)
+            {
+                userDto.Add(new ResultUserDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    AccessFailedCount = user.AccessFailedCount,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    EmailConfirmed = user.EmailConfirmed,
+                    PhoneNumber = user.PhoneNumber,
+                    PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                    Surname = user.Surname,
+                    TwoFactorEnabled = user.TwoFactorEnabled
+
+                });
+            }
+            return Ok(userDto);
         }
     }
 }

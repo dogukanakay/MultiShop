@@ -13,33 +13,32 @@ using System.Text.Json;
 namespace MultiShop.WebUI.Controllers
 {
     public class LoginController : Controller
-	{
-		private readonly string myLoginApi = "http://localhost:5001/api/logins";
-		private readonly IHttpClientFactory _httpClientFactory;
-		private readonly IIdentityService _identityService;
+    {
 
-        public LoginController(IHttpClientFactory httpClientFactory, IIdentityService identityService)
+        private readonly IIdentityService _identityService;
+
+        public LoginController(IIdentityService identityService)
         {
-            _httpClientFactory = httpClientFactory;
+
 
             _identityService = identityService;
         }
 
         [HttpGet]
-		public IActionResult Index()
-		{
-			return View();
-		}
+        public IActionResult Index()
+        {
+            return View();
+        }
 
-		[HttpPost]
-		public async Task<IActionResult> Index(SignInDto signInDto)
-		{
+        [HttpPost]
+        public async Task<IActionResult> Index(SignInDto signInDto)
+        {
             await _identityService.SignIn(signInDto);
             return RedirectToAction("Index", "User");
-           
-		}
+
+        }
 
 
-	
-	}
+
+    }
 }

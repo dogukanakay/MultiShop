@@ -1,0 +1,60 @@
+﻿@model List<ResultUserDto>
+@{
+    ViewData["Title"] = "UserList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<section class="content container-fluid">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="chart-box">
+                <div class="bs-example" data-example-id="bordered-table">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Kullanıcı Id</th>
+                                <th>Adı</th>
+                                <th>Soyadı</th>
+                                <th>Kullanıcı Adı</th>
+                                <th>Email</th>
+                                <th>Email Onay</th>
+                                <th>Telefon</th>
+                                <th>Telefon Onay</th>
+                                <th>2Fac Giriş</th>
+                                <th>Hatalı Giriş</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                count++;
+                                <tr>
+                                    <th scope="row">@count</th>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Surname</td>
+                                    <td>@item.UserName</td>
+                                    <td>@item.Email</td>
+                                    <td>@item.EmailConfirmed</td>
+                                    <td>@item.PhoneNumber</td>
+                                    <td>@item.PhoneNumberConfirmed</td>
+                                    <td>@item.TwoFactorEnabled</td>
+                                    <td>@item.AccessFailedCount</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</section>
+
