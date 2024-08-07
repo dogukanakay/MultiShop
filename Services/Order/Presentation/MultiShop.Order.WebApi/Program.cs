@@ -17,6 +17,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddDbContext<OrderContext>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IOrderingRepository), typeof(OrderingRepository));
+builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
 
 builder.Services.AddApplicationService(builder.Configuration);
 // Add services to the container.
@@ -25,6 +26,7 @@ builder.Services.AddScoped<GetAddressByIdQueryHandler>();
 builder.Services.AddScoped<CreateAddressCommandHandler>();
 builder.Services.AddScoped<UpdateAddressCommandHandler>();
 builder.Services.AddScoped<RemoveAddressCommandHandler>();
+builder.Services.AddScoped<GetAddressesByUserIdQueryHandler>();
 
 builder.Services.AddScoped<GetOrderDetailQueryHandler>();
 builder.Services.AddScoped<GetOrderDetailByIdQueryHandler>();

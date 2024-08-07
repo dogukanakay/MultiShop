@@ -1,0 +1,58 @@
+﻿@model List<GetAddressesByUserIdDto>
+@{
+    ViewData["Title"] = "UserAddresses";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<section class="content container-fluid">
+    <h4>Kullanıcının Adresleri</h4>
+    <div class="row">
+
+        @foreach (var item in Model)
+
+        {
+
+            <div class="col-md-6">
+
+                <div class="chart-box">
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+
+                            <div class="user-img pull-left">
+
+                                <img src="~/Admin/dist/img/img3.jpg" class="img-circle img-responsive" alt="User Image">
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-9">
+
+                            <div class="mail-contnet">
+
+                                <h4>@item.Name @item.Surname</h4>
+
+                                <p class="m-bot-2">@item.Detail1 - @item.Detail2 - @item.District - @item.City - @item.Country - @item.Zipcode</p>
+
+                                <h5>Telefon:@item.Phone </h5>
+
+                                <h5>Email:@item.Email </h5>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+
+</section>

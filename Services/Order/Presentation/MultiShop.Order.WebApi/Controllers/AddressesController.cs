@@ -17,18 +17,21 @@ namespace MultiShop.Order.WebApi.Controllers
         private readonly CreateAddressCommandHandler _createAddressCommandHandler;
         private readonly UpdateAddressCommandHandler _updateAddressCommandHandler;
         private readonly RemoveAddressCommandHandler _removeAddressCommandHandler;
+        private readonly GetAddressesByUserIdQueryHandler _getAddressesByUserIdQueryHandler;
 
         public AddressesController(GetAddressQueryHandler getAddressQueryHandler,
             GetAddressByIdQueryHandler getAddressByIdQueryHandler,
             CreateAddressCommandHandler createAddressCommandHandler,
             UpdateAddressCommandHandler updateAddressCommandHandler, 
-            RemoveAddressCommandHandler removeAddressCommandHandler)
+            RemoveAddressCommandHandler removeAddressCommandHandler,
+            GetAddressesByUserIdQueryHandler getAddressesByUserIdQueryHandler)
         {
             _getAddressQueryHandler = getAddressQueryHandler;
             _getAddressByIdQueryHandler = getAddressByIdQueryHandler;
             _createAddressCommandHandler = createAddressCommandHandler;
             _updateAddressCommandHandler = updateAddressCommandHandler;
             _removeAddressCommandHandler = removeAddressCommandHandler;
+            _getAddressesByUserIdQueryHandler = getAddressesByUserIdQueryHandler;
         }
 
         [HttpGet]
@@ -42,6 +45,13 @@ namespace MultiShop.Order.WebApi.Controllers
         public async Task<IActionResult> GetAddressListById(int id)
         {
             var values = await _getAddressByIdQueryHandler.Handle(new GetAddressByIdQuery(id));
+            return Ok(values);
+        }
+
+        [HttpGet("GetAddressListByUserId/{id}")]
+        public async Task<IActionResult> GetAddressListByUserId(string id)
+        {
+            var values = await _getAddressesByUserIdQueryHandler.Handle(new GetAddressesByUserIdQuery(id));
             return Ok(values);
         }
 

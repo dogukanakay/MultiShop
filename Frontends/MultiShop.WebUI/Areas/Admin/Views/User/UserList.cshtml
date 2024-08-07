@@ -20,11 +20,9 @@
                                 <th>Soyadı</th>
                                 <th>Kullanıcı Adı</th>
                                 <th>Email</th>
-                                <th>Email Onay</th>
                                 <th>Telefon</th>
-                                <th>Telefon Onay</th>
-                                <th>2Fac Giriş</th>
-                                <th>Hatalı Giriş</th>
+                                <th>Adresler</th>
+                               
                                 
                             </tr>
                         </thead>
@@ -39,11 +37,10 @@
                                     <td>@item.Surname</td>
                                     <td>@item.UserName</td>
                                     <td>@item.Email</td>
-                                    <td>@item.EmailConfirmed</td>
                                     <td>@item.PhoneNumber</td>
-                                    <td>@item.PhoneNumberConfirmed</td>
-                                    <td>@item.TwoFactorEnabled</td>
-                                    <td>@item.AccessFailedCount</td>
+                                    <td><a href="/Admin/User/UserAddresses/@item.Id" class="btn btn-info">Adresler</a></td>
+                                
+                                    
                                 </tr>
                             }
 
