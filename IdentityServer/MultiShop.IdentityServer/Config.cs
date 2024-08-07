@@ -117,7 +117,7 @@ namespace MultiShop.IdentityServer
                 ClientSecrets = {new Secret("multishopsecret".Sha256())},
                 AllowedScopes={"CatalogFullPermission","DiscountFullPermission","OrderFullPermission",
                     "CargoFullPermission","BasketFullPermission","OcelotFullPermission",
-                    "CommentFullPermission","PaymenFullPermission","ImageFullPermission",
+                    "CommentFullPermission","PaymenFullPermission","ImageFullPermission","MessageFullPermission",
                     IdentityServerConstants.LocalApi.ScopeName,
                     IdentityServerConstants.StandardScopes.Email,
                     IdentityServerConstants.StandardScopes.OpenId,
