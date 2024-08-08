@@ -72,5 +72,11 @@ namespace MultiShop.Message.Controllers
         {
             return Ok(await _userMessageService.GetMessageCountAsync());
         }
+
+        [HttpGet("GetMessageCountByReceiverId")]
+        public async Task<IActionResult> GetMessageCountByReceiverId(string receiverId) 
+        {
+            return Ok(await _userMessageService.GetMessageCountByReceiverId(receiverId));
+        }
     }
 }
