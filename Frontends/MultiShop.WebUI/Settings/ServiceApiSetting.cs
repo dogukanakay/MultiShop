@@ -13,5 +13,6 @@
         public ServiceApi Payment { get; set; }
         public ServiceApi Comment { get; set; }
         public ServiceApi Message { get; set; }
+        public ServiceApi Identity { get; set; }
     }
 }

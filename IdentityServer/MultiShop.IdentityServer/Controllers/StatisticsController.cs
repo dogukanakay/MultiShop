@@ -18,7 +18,7 @@ namespace MultiShop.IdentityServer.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet]
+        [HttpGet("GetUserCount")]
         public async Task<IActionResult> GetUserCount()
         {
             var userCount = await _userManager.Users.CountAsync();
