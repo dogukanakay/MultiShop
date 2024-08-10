@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MultiShop.SignalRRealTimeApi.Services.SignalRCommentServices;
 using MultiShop.SignalRRealTimeApi.Services.SignalRMessageServices;
 
@@ -8,9 +7,9 @@ namespace MultiShop.SignalRRealTimeApi.Hubs
 {
     public class SignalRHub : Hub
     {
+
         private readonly ISignalRCommentService _signalRCommentService;
         private readonly ISignalRMessageService _signalRMessageService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public SignalRHub(ISignalRCommentService signalRCommentService, ISignalRMessageService signalRMessageService)
         {
@@ -18,13 +17,20 @@ namespace MultiShop.SignalRRealTimeApi.Hubs
             _signalRMessageService = signalRMessageService;
         }
 
-        public async Task SendStatisticCount(string receiverId)
+        public override async Task OnConnectedAsync()
         {
-            var token = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            var commentCount = await _signalRCommentService.GetCommentCount();
+
+            var accessToken = Context.GetHttpContext().Request.Query["access_token"];
+            await base.OnConnectedAsync();
+        }
+        public async Task SendStatisticAsync(string receiverId)
+        {
+
+            var token = Context.GetHttpContext().Request.Query["access_token"];
+            var commentCount = await _signalRCommentService.GetCommentCount(token);
             await Clients.All.SendAsync("ReceiveCommentCount", commentCount);
 
-            var messageCount = await _signalRMessageService.GetMessageCountByReceiverId(receiverId);
+            var messageCount = await _signalRMessageService.GetMessageCountByReceiverId(token,receiverId);
             await Clients.All.SendAsync("ReceiveMessageCount", messageCount);
         }
     }

@@ -2,6 +2,6 @@
 {
     public interface ISignalRCommentService
     {
-        Task<int> GetCommentCount();
+        Task<int> GetCommentCount(string token);
     }
 }

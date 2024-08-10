@@ -8,39 +8,22 @@
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
+<div id="userId" data-user-id="@ViewBag.UserId"></div>
 <div class="content">
     <br /><br />
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <script type="text/javascript">
-                    $(document).ready(() => {
-                        var connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:7195/SignalRHub").build();
-                        $("#connstatus").text(connection.state);
-
-                        connection.start().then(() => {
-                            $("#connstatus").text(connection.state);
-                            connection.invoke("SendStatisticCount");
-                        }).catch((err) => { console.log(err) });
-
-                        connection.on("ReceiveCommentCount", (commentCount) => {
-                            $("#commentcount").text(commentCount);
-                        });
-                        
-                        
-                    });
-                </script>
+                <h1 id="connstatus">Bağlantı durumu: </h1>
+                <h1 id="commentCount">Yorum Sayısı: </h1>
+                <h1 id="messageCount">Mesaj Sayısı: </h1>
             </div>
         </div>
     </div>
-
 </div>
-
 
 <section class="content container-fluid">
     <div class="row">
-
         <div class="col-md-12">
             <div class="chart-box">
                 <div class="bs-example" data-example-id="bordered-table">
@@ -51,9 +34,37 @@
                 </div>
             </div>
         </div>
-
-
-
     </div>
 </section>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const userId = document.getElementById("userId").getAttribute("data-user-id");
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("http://localhost:7195/signalrhub", {
+                accessTokenFactory: () => {
+                    return fetch('https://localhost:7046/api/token')
+                        .then(response => response.text())
+                        .then(token => token.replace(/"/g, '')) // Token'ı temizle
+                        .catch(err => console.error('Token fetch error:', err));
+                }
+            })
+            .build();
+
+        connection.on("ReceiveCommentCount", function (commentCount) {
+            document.getElementById("commentCount").textContent = `Yorum Sayısı: ${commentCount}`;
+        });
+
+        connection.on("ReceiveMessageCount", function (messageCount) {
+            document.getElementById("messageCount").textContent = `Mesaj Sayısı: ${messageCount}`;
+        });
+
+        connection.start().then(function () {
+            document.getElementById("connstatus").textContent = `Bağlantı durumu: ${connection.state}`;
+            return connection.invoke("SendStatisticAsync", userId)
+                .catch(err => console.error('Invoke error:', err));
+        }).catch(function (err) {
+            console.error('Connection start error:', err.toString());
+        });
+    });
+</script>

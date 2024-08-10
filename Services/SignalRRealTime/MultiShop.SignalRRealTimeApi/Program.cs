@@ -10,12 +10,13 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", builder =>
     {
-        builder.AllowAnyHeader().
-        AllowAnyMethod().
-        SetIsOriginAllowed((host) => true).
-        AllowCredentials();
+        builder.AllowAnyHeader()
+               .AllowAnyMethod()
+               .SetIsOriginAllowed((host) => true)
+               .AllowCredentials();
     });
 });
+
 builder.Services.AddHttpClient();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<ISignalRMessageService, SignalRMessageService>();

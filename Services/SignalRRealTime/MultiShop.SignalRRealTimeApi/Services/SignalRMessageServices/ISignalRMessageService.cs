@@ -2,6 +2,6 @@
 {
     public interface ISignalRMessageService
     {
-        Task<int> GetMessageCountByReceiverId(string recevierId);
+        Task<int> GetMessageCountByReceiverId(string token,string recevierId);
     }
 }

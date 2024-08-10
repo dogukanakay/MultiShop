@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MultiShop.WebUI.Handlers;
 using MultiShop.WebUI.Services.BasketServices;
 using MultiShop.WebUI.Services.CargoServices.CargoCompanyServices;
@@ -30,6 +33,7 @@ using MultiShop.WebUI.Services.UserIdentityService;
 using MultiShop.WebUI.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddCookie(JwtBearerDefaults.AuthenticationScheme, opt =>
 {
@@ -198,7 +202,11 @@ builder.Services.Configure<ServiceApiSetting>(builder.Configuration.GetSection("
 
 
 var app = builder.Build();
-
+app.MapGet("/api/token", [Authorize] async (HttpContext httpContext) =>
+{
+    var token = await httpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+    return Results.Ok(token.Replace("\"", ""));
+});
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
