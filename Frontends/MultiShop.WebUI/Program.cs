@@ -202,11 +202,9 @@ builder.Services.Configure<ServiceApiSetting>(builder.Configuration.GetSection("
 
 
 var app = builder.Build();
-app.MapGet("/api/token", [Authorize] async (HttpContext httpContext) =>
-{
-    var token = await httpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-    return Results.Ok(token.Replace("\"", ""));
-});
+
+   
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

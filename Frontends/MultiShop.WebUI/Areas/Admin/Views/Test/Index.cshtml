@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    var accessToken = ViewBag.AccessToken;
 }
 
 <script src="~/microsoft/signalr/dist/browser/signalr.min.js"></script>
@@ -40,14 +41,11 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const userId = document.getElementById("userId").getAttribute("data-user-id");
+        const accessToken = '@accessToken';
+
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("http://localhost:7195/signalrhub", {
-                accessTokenFactory: () => {
-                    return fetch('https://localhost:7046/api/token')
-                        .then(response => response.text())
-                        .then(token => token.replace(/"/g, '')) // Token'ı temizle
-                        .catch(err => console.error('Token fetch error:', err));
-                }
+                accessTokenFactory: () => accessToken
             })
             .build();
 

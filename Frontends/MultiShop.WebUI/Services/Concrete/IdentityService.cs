@@ -26,31 +26,28 @@ namespace MultiShop.WebUI.Services.Concrete
             _serviceApiSetting = serviceApiSetting.Value;
         }
 
-        public async Task<bool> GetRefreshToken()
+        private async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync()
         {
             var discoveryEndPoint = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
                 Address = _serviceApiSetting.IdentityServerUrl,
                 Policy = new DiscoveryPolicy
                 {
-                    RequireHttps = false,
+                    RequireHttps = true, // HTTPS kullanımını zorunlu kıl
                 }
             });
 
-            var refreshToken = await _contextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
-
-            RefreshTokenRequest refreshTokenRequest = new()
+            if (discoveryEndPoint.IsError)
             {
+                throw new Exception("Discovery document retrieval failed: " + discoveryEndPoint.Error);
+            }
 
-                ClientId = _clientSettings.MultiShopManagerClient.ClientId,
-                ClientSecret = _clientSettings.MultiShopManagerClient.ClientSecret,
-                RefreshToken = refreshToken,
-                Address = discoveryEndPoint.TokenEndpoint
-            };
+            return discoveryEndPoint;
+        }
 
-            var token = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest);
-
-            var authenticationToken = new List<AuthenticationToken>()
+        private async Task StoreTokensAsync(TokenResponse token)
+        {
+            var authenticationToken = new List<AuthenticationToken>
             {
                 new AuthenticationToken
                 {
@@ -70,26 +67,48 @@ namespace MultiShop.WebUI.Services.Concrete
             };
 
             var result = await _contextAccessor.HttpContext.AuthenticateAsync();
-            
+
             var properties = result.Properties;
-            
+
             properties.StoreTokens(authenticationToken);
-            
+
             await _contextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, result.Principal, properties);
+        }
+
+        public async Task<bool> GetRefreshToken()
+        {
+            var discoveryEndPoint = await GetDiscoveryDocumentAsync();
+
+            var refreshToken = await _contextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                throw new Exception("Refresh token is missing");
+            }
+
+            RefreshTokenRequest refreshTokenRequest = new()
+            {
+                ClientId = _clientSettings.MultiShopManagerClient.ClientId,
+                ClientSecret = _clientSettings.MultiShopManagerClient.ClientSecret,
+                RefreshToken = refreshToken,
+                Address = discoveryEndPoint.TokenEndpoint
+            };
+
+            var token = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest);
+
+            if (token.IsError)
+            {
+                throw new Exception("Token refresh failed: " + token.Error);
+            }
+
+            await StoreTokensAsync(token);
 
             return true;
         }
 
         public async Task<bool> SignIn(SignInDto signInDto)
         {
-            var discoveryEndPoint = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
-            {
-                Address = _serviceApiSetting.IdentityServerUrl,
-                Policy = new DiscoveryPolicy
-                {
-                    RequireHttps = false,
-                }
-            });
+            var discoveryEndPoint = await GetDiscoveryDocumentAsync();
 
             var passwordTokenRequest = new PasswordTokenRequest
             {
@@ -97,10 +116,16 @@ namespace MultiShop.WebUI.Services.Concrete
                 ClientSecret = _clientSettings.MultiShopManagerClient.ClientSecret,
                 UserName = signInDto.UserName,
                 Password = signInDto.Password,
-                Address = discoveryEndPoint.TokenEndpoint
+                Address = discoveryEndPoint.TokenEndpoint,
+               
             };
 
             var token = await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
+
+            if (token.IsError)
+            {
+                throw new Exception("Password token request failed: " + token.Error);
+            }
 
             var userInfoRequest = new UserInfoRequest
             {
@@ -110,13 +135,18 @@ namespace MultiShop.WebUI.Services.Concrete
 
             var userValues = await _httpClient.GetUserInfoAsync(userInfoRequest);
 
+            if (userValues.IsError)
+            {
+                throw new Exception("User info request failed: " + userValues.Error);
+            }
+
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(userValues.Claims, CookieAuthenticationDefaults.AuthenticationScheme, "name", "role");
 
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
             var authenticationProperties = new AuthenticationProperties();
 
-            authenticationProperties.StoreTokens(new List<AuthenticationToken>()
+            authenticationProperties.StoreTokens(new List<AuthenticationToken>
             {
                 new AuthenticationToken
                 {
