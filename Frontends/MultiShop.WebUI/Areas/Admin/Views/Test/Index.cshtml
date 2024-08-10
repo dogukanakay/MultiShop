@@ -44,9 +44,10 @@
         const accessToken = '@accessToken';
 
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:7195/signalrhub", {
+            .withUrl("https://localhost:7195/signalrhub", {
                 accessTokenFactory: () => accessToken
-            })
+            }).withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Error)  
             .build();
 
         connection.on("ReceiveCommentCount", function (commentCount) {
