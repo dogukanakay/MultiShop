@@ -85,9 +85,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multishop.Images.WebUI", "S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitMQMessage", "RabbitMQMessage", "{B6A668F5-F295-4273-92D5-A709CEB566DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiShop.RabbitMQMessageApi", "Services\RabbitMQMessage\MultiShop.RabbitMQMessageApi\MultiShop.RabbitMQMessageApi.csproj", "{7F820B24-AE3A-4C95-83D2-3869F7B6D24B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiShop.RabbitMQMessageApi", "Services\RabbitMQMessage\MultiShop.RabbitMQMessageApi\MultiShop.RabbitMQMessageApi.csproj", "{7F820B24-AE3A-4C95-83D2-3869F7B6D24B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiShop.RapidApiWebUI", "RapidApi\MultiShop.RapidApiWebUI\MultiShop.RapidApiWebUI.csproj", "{349B242A-9C89-41DA-B5E8-B71A889177A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiShop.RapidApiWebUI", "RapidApi\MultiShop.RapidApiWebUI\MultiShop.RapidApiWebUI.csproj", "{349B242A-9C89-41DA-B5E8-B71A889177A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

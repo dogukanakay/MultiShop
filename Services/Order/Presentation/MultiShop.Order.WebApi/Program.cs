@@ -5,6 +5,7 @@ using MultiShop.Order.Application.Interfaces;
 using MultiShop.Order.Application.Services;
 using MultiShop.Order.Persistence.Context;
 using MultiShop.Order.Persistence.Repository;
+using MultiShop.Order.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,26 +15,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     opt.Audience = "ResourceDiscount";
     opt.RequireHttpsMetadata = false; //https kapatma, http üzerinde çal??mak için
 });
-builder.Services.AddDbContext<OrderContext>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped(typeof(IOrderingRepository), typeof(OrderingRepository));
-builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
+
 
 builder.Services.AddApplicationService(builder.Configuration);
 // Add services to the container.
-builder.Services.AddScoped<GetAddressQueryHandler>();
-builder.Services.AddScoped<GetAddressByIdQueryHandler>();
-builder.Services.AddScoped<CreateAddressCommandHandler>();
-builder.Services.AddScoped<UpdateAddressCommandHandler>();
-builder.Services.AddScoped<RemoveAddressCommandHandler>();
-builder.Services.AddScoped<GetAddressesByUserIdQueryHandler>();
-
-builder.Services.AddScoped<GetOrderDetailQueryHandler>();
-builder.Services.AddScoped<GetOrderDetailByIdQueryHandler>();
-builder.Services.AddScoped<CreateOrderDetailCommandHandler>();
-builder.Services.AddScoped<UpdateOrderDetailCommandHandler>();
-builder.Services.AddScoped<RemoveOrderDetailCommandHandler>();
-
+builder.Services.AddRegistiration();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
