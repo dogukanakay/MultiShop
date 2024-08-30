@@ -23,7 +23,7 @@ namespace MultiShop.RabbitMQMessageApi.Controllers
             var channel = connection.CreateModel();
 
             channel.QueueDeclare("Que2", false, false, false, arguments: null);
-            var messageContent = "Merhaba yarram bu kurs için az daha beter bir kurs";
+            var messageContent = "Deneme";
             var byteMessageContent = Encoding.UTF8.GetBytes(messageContent);
 
             channel.BasicPublish(exchange: "", routingKey: "Que2", basicProperties: null, body: byteMessageContent);
